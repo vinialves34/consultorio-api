@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Medico;
 use App\Helper\MedicoFactory;
+use App\Repository\MedicoRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +24,11 @@ class MedicosController extends AbstractController
      */
     private $medicoFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, MedicoFactory $medicoFactory)
+    public function __construct(EntityManagerInterface $entityManager, MedicoFactory $medicoFactory, MedicoRepository $medicoRepository)
     {
         $this->medicoFactory = $medicoFactory;
         $this->entityManager = $entityManager;
+        $this->medicoRepository = $medicoRepository;
     }
 
     /**
@@ -48,8 +50,7 @@ class MedicosController extends AbstractController
      */
     public function buscarTodos() : Response
     {
-        $repositorioDeMedicos = $this->getDoctrine()->getRepository(Medico::class);
-        $medicoList = $repositorioDeMedicos->findAll();
+        $medicoList = $this->medicoRepository->findAll();
 
         if (empty($medicoList) || is_null($medicoList)) {
             $medicoList = [
@@ -108,9 +109,18 @@ class MedicosController extends AbstractController
 
     public function buscarMedico(int $id)
     {
-        $repositorioDeMedicos = $this->getDoctrine()->getRepository(Medico::class);
-        $medico = $repositorioDeMedicos->find($id);    
+        $medico = $this->medicoRepository->find($id);    
 
         return $medico;
+    }
+
+    /**
+     *@Route("/especialidades/{especialidadeId}/medicos", methods={"GET"})
+     */
+    public function buscaPorEspecialidade(int $especialidadeId) : Response
+    {
+        $medicos = $this->medicoRepository->findBy(['especialidade' => $especialidadeId]);
+
+        return new JsonResponse($medicos);
     }
 }
