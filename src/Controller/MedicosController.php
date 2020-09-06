@@ -17,12 +17,6 @@ class MedicosController extends BaseController
         $this->factory = $medicoFactory;
     }
 
-    public function buscarMedico(int $id)
-    {
-        $medico = $this->medicoRepository->find($id);    
-        return $medico;
-    }
-
     /**
      *@Route("/especialidades/{especialidadeId}/medicos", methods={"GET"})
      */
