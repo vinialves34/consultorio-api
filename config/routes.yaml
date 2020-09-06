@@ -1,3 +1,61 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+# Rotas de Medicos
+novoMedico:
+  path: /medicos
+  controller: App\Controller\MedicosController::novo
+  methods:
+    - POST
+
+medicos:
+  path: /medicos
+  controller: App\Controller\MedicosController::buscarTodos
+  methods: 
+    - GET
+
+atualizaMedico:
+  path: /medicos/{id}
+  controller: App\Controller\MedicosController::atualizar
+  methods:
+    - PUT
+
+medico:
+  path: /medicos/{id}
+  controller: App\Controller\MedicosController::buscar
+  methods: 
+    - GET
+
+deletarMedico:
+  path: /medicos/{id}
+  controller: App\Controller\MedicosController::deletar
+  methods:
+    - DELETE
+
+# Rotas de Especialidades
+novoEspecialidade:
+  path: /especialidades
+  controller: App\Controller\EspecialidadesController::novo
+  methods:
+    - POST
+
+especialidades:
+  path: /especialidades
+  controller: App\Controller\EspecialidadesController::buscarTodos
+  methods:
+    - GET
+
+especialidade:
+  path: /especialidades/{id}
+  controller: App\Controller\EspecialidadesController::buscar
+  methods:
+    - GET
+
+atualizaEspecialidade:
+  path: /especialidades/{id}
+  controller: App\Controller\EspecialidadesController::atualizar
+  methods:
+    - PUT
+
+deletarEspecialidade:
+  path: /especialidades/{id}
+  controller: App\Controller\EspecialidadesController::deletar
+  methods:
+    - DELETE
