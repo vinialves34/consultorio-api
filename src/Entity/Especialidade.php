@@ -9,19 +9,19 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 /**
  * @ORM\Entity(repositoryClass=EspecialidadeRepository::class)
  */
-class Especialidade
+class Especialidade implements \JsonSerializable
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    public $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string")
      */
-    public $descricao;
+    private $descricao;
 
     public function getId(): ?int
     {
@@ -38,5 +38,13 @@ class Especialidade
         $this->descricao = $descricao;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'descricao' => $this->getDescricao()
+        ];
     }
 }

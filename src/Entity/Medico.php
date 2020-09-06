@@ -8,24 +8,24 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 /**
  * @ORM\Entity()
  */
-class Medico
+class Medico implements \JsonSerializable
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    public $id;
+    private $id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    public $crm;
+    private $crm;
 
     /**
      * @ORM\Column(type="string")
      */
-    public $nome;
+    private $nome;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Especialidade")
@@ -72,5 +72,15 @@ class Medico
         $this->especialidade = $especialidade;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'crm' => $this->getCrm(),
+            'nome' => $this->getNome(),
+            'especialidade_id' => $this->getEspecialidade()
+        ];
     }
 }

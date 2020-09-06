@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Especialidade;
 use App\Helper\EspecialidadeFactory;
+use App\Repository\EspecialidadeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,10 +24,16 @@ class EspecialidadesController extends AbstractController
      */
     private $especialidadeFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, EspecialidadeFactory $especialidadeFactory)
+    /**
+     * @var EspecialidadeRepository
+     */
+    private $especialidadeRepository;
+
+    public function __construct(EntityManagerInterface $entityManager, EspecialidadeFactory $especialidadeFactory, EspecialidadeRepository $especialidadeRepository)
     {
         $this->entityManager = $entityManager;
         $this->especialidadeFactory = $especialidadeFactory;
+        $this->especialidadeRepository = $especialidadeRepository;
     }
 
     /**
@@ -48,17 +55,16 @@ class EspecialidadesController extends AbstractController
      */
     public function buscarTodas() : Response
     {
-        $repositoryEspecialidades = $this->getDoctrine()->getRepository(Especialidade::class);
-        $especialidadesList = $repositoryEspecialidades->findAll();
+        $especialidadesRetorno = $this->especialidadeRepository->findAll();
 
-        if (empty($especialidadesList) || is_null($especialidadesList)) {
-            $especialidadesList = [
+        if (empty($especialidadesRetorno) || is_null($especialidadesRetorno)) {
+            $especialidadesRetorno = [
                 "StatusCode" => Response::HTTP_NO_CONTENT,
                 "Msg" => "Não contém especialidades cadastradas"
             ];
         }
 
-        return new JsonResponse($especialidadesList);
+        return new JsonResponse($especialidadesRetorno);
     }
 
     /**
@@ -85,8 +91,7 @@ class EspecialidadesController extends AbstractController
             return new Response('', Response::HTTP_NOT_FOUND);
         }
 
-        $especialidadeExistente->descricao = $especialidade->descricao;
-
+        $especialidadeExistente->setDescricao($especialidade->getDescricao());
         $this->entityManager->flush();
 
         return new JsonResponse($especialidadeExistente);
@@ -106,8 +111,7 @@ class EspecialidadesController extends AbstractController
 
     public function buscarEspecialidade(int $id)
     {
-        $repositoryEspecialidades = $this->getDoctrine()->getRepository(Especialidade::class);
-        $especialidade = $repositoryEspecialidades->find($id);
+        $especialidade = $this->especialidadeRepository->find($id);
 
         return $especialidade;
     }

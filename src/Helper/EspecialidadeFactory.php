@@ -11,7 +11,7 @@ class EspecialidadeFactory
         $dadosJson = json_decode($json);
 
         $especialidade = new Especialidade();
-        $especialidade->descricao = $dadosJson->descricao;
+        $especialidade->setDescricao($dadosJson->descricao);
 
         return $especialidade;
     }
