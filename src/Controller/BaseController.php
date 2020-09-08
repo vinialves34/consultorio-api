@@ -28,6 +28,11 @@ abstract class BaseController extends AbstractController
      */
     protected $factory;
 
+    /**
+     * @var ExtratorDadosRequest
+     */
+    protected $extratorDados;
+
     public function __construct(ObjectRepository $repository, EntityManagerInterface $entityManager, EntidadeFactory $factory, ExtratorDadosRequest $extratorDados)
     {
         $this->repository = $repository;
@@ -67,7 +72,9 @@ abstract class BaseController extends AbstractController
     {
         $dadosOrdenacao = $this->extratorDados->buscaDadosOrdenacao($request);
         $dadosFiltro = $this->extratorDados->buscaDadosFiltro($request);
-        $entityList = $this->repository->findBy($dadosFiltro, $dadosOrdenacao);
+        [$paginaAtual, $itensPorPagina] = $this->extratorDados->buscaDadosPaginacao($request);
+        $offset = ($paginaAtual - 1) * $itensPorPagina;
+        $entityList = $this->repository->findBy($dadosFiltro, $dadosOrdenacao, $itensPorPagina, $offset);
 
         return new JsonResponse($entityList);
     }
