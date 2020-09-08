@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Helper\EntidadeFactory;
 use App\Helper\ExtratorDadosRequest;
+use App\Helper\ResponseFactory;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,12 +77,16 @@ abstract class BaseController extends AbstractController
         $offset = ($paginaAtual - 1) * $itensPorPagina;
         $entityList = $this->repository->findBy($dadosFiltro, $dadosOrdenacao, $itensPorPagina, $offset);
 
-        return new JsonResponse($entityList);
+        $factoryResponse = new ResponseFactory(true, $entityList, Response::HTTP_OK, $paginaAtual, $itensPorPagina);
+        return $factoryResponse->getResponse();
     }
 
     public function buscar(int $id) : Response
     {
-        return new JsonResponse($this->repository->find($id));
+        $entidade = $this->repository->find($id);
+        $statusResponse = is_null($entidade) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
+        $factoryResponse = new ResponseFactory(true, $entidade, $statusResponse);
+        return $factoryResponse->getResponse();
     }
 
     public function deletar(int $id) : Response
