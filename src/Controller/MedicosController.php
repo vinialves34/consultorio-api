@@ -12,14 +12,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MedicosController extends BaseController
 {
-    public function __construct(EntityManagerInterface $entityManager, MedicoRepository $medicoRepository, MedicoFactory $medicoFactory, ExtratorDadosRequest $extratorDados)
+    public function __construct(MedicoRepository $medicoRepository, EntityManagerInterface $entityManager, MedicoFactory $medicoFactory, ExtratorDadosRequest $extratorDados)
     {
         parent::__construct($medicoRepository, $entityManager, $medicoFactory, $extratorDados);
         $this->factory = $medicoFactory;
+        $this->medicoRepository = $medicoRepository;
     }
 
     /**
-     *@Route("/especialidades/{especialidadeId}/medicos", methods={"GET"})
+     * Busca medicos por especialidade
+     * @Route("/especialidades/{especialidadeId}/medicos", methods={"GET"})
+     * @param int $especialidadeId
      */
     public function buscaPorEspecialidade(int $especialidadeId) : Response
     {

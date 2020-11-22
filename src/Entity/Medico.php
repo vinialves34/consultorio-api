@@ -62,12 +62,12 @@ class Medico implements \JsonSerializable
         return $this;
     }
 
-    public function getEspecialidade() : ?Especialidade
+    public function getEspecialidade(): ?Especialidade
     {
         return $this->especialidade;        
     }
 
-    public function setEspecialidade(?Especialidade $especialidade) : self
+    public function setEspecialidade(?Especialidade $especialidade): self
     {
         $this->especialidade = $especialidade;
 
@@ -80,7 +80,17 @@ class Medico implements \JsonSerializable
             'id' => $this->getId(),
             'crm' => $this->getCrm(),
             'nome' => $this->getNome(),
-            'especialidade_id' => $this->getEspecialidade()
+            'especialidade_id' => $this->getEspecialidade()->getId(),
+            '_links' => [
+                [
+                    'rel' => 'self',
+                    'path' => '/medicos/' . $this->getId()
+                ],
+                [
+                    'rel' => 'especialidade',
+                    'path' => '/especialidades/' . $this->getEspecialidade()->getId()
+                ]
+            ]
         ];
     }
 }

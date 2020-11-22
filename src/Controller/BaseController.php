@@ -14,24 +14,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class BaseController extends AbstractController
 {
-    /**
-     * @var ObjectRepository
-     */
+    /** @var ObjectRepository */
     protected $repository;
 
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
-    /**
-     * @var EntidadeFactory
-     */
+    /** @var EntidadeFactory */
     protected $factory;
 
-    /**
-     * @var ExtratorDadosRequest
-     */
+    /** @var ExtratorDadosRequest */
     protected $extratorDados;
 
     public function __construct(ObjectRepository $repository, EntityManagerInterface $entityManager, EntidadeFactory $factory, ExtratorDadosRequest $extratorDados)
@@ -42,6 +34,10 @@ abstract class BaseController extends AbstractController
         $this->extratorDados = $extratorDados;
     }
 
+    /**
+     * Responsável em cadastrar novo registro
+     * @param Request $req
+     */
     public function novo(Request $req) : Response
     {
         $dadosRequest = $req->getContent();
@@ -53,6 +49,11 @@ abstract class BaseController extends AbstractController
         return new JsonResponse($entidade);
     }
 
+    /**
+     * Responsável em atualizar um registro
+     * @param int $id
+     * @param Request $req
+     */
     public function atualizar(int $id, Request $req) : Response
     {
         $dadosRequest = $req->getContent();
@@ -69,6 +70,10 @@ abstract class BaseController extends AbstractController
         return new JsonResponse($entidadeExistente);
     }
 
+    /**
+     * Responsável me buscar todos os registros
+     * @param Request $request
+     */
     public function buscarTodos(Request $request) : Response
     {
         $dadosOrdenacao = $this->extratorDados->buscaDadosOrdenacao($request);
@@ -81,6 +86,10 @@ abstract class BaseController extends AbstractController
         return $factoryResponse->getResponse();
     }
 
+    /**
+     * Responsável em buscar um registro especifico
+     * @param int $id
+     */
     public function buscar(int $id) : Response
     {
         $entidade = $this->repository->find($id);
@@ -89,6 +98,10 @@ abstract class BaseController extends AbstractController
         return $factoryResponse->getResponse();
     }
 
+    /**
+     * Responsável em excluir um registro
+     * @param int $id
+     */
     public function deletar(int $id) : Response
     {
         $entidade = $this->repository->find($id);

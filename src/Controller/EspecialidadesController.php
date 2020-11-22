@@ -9,13 +9,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EspecialidadesController extends BaseController
 {
-    public function __construct(EntityManagerInterface $entityManager, EspecialidadeFactory $especialidadeFactory, EspecialidadeRepository $repository, ExtratorDadosRequest $extratorDados)
+    public function __construct(EspecialidadeRepository $especialidadeRepository, EntityManagerInterface $entityManager, EspecialidadeFactory $especialidadeFactory, ExtratorDadosRequest $extratorDados)
     {
-        parent::__construct($repository, $entityManager, $especialidadeFactory, $extratorDados);
+        parent::__construct($especialidadeRepository, $entityManager, $especialidadeFactory, $extratorDados);
         $this->entityManager = $entityManager;
         $this->factory = $especialidadeFactory;
+        $this->especialidadeRepository = $especialidadeRepository;
     }
 
+    /**
+     * Buscar uma especialidade especifica
+     * @param int $id
+     */
     public function buscarEspecialidade(int $id)
     {
         $especialidade = $this->especialidadeRepository->find($id);
