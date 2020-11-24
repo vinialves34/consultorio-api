@@ -21,8 +21,9 @@ class LoginController extends AbstractController
     /**
      * @Route("/login", name="login")
      * @param Request $request
+     * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $dadosJson = json_decode($request->getContent());
 
@@ -30,7 +31,7 @@ class LoginController extends AbstractController
             return new JsonResponse([
                 'erro' => 'Favor enviar usuário e senha'
 
-            ], Response::HTTP_BAD_REQUEST);
+            ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
         $user = $this->userRepository->findOneBy(['username' => $dadosJson->usuario]);
@@ -38,7 +39,7 @@ class LoginController extends AbstractController
         if (!$this->encoder->isPasswordValid($user, $dadosJson->senha)) {
             return new JsonResponse([
                 'erro' => 'Usuário ou senha inválidos'
-            ], Response::HTTP_UNAUTHORIZED);
+            ], JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         $token = JWT::encode(['username' => $user->getUsername()], 'chaveTeste');

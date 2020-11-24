@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Helper\EntidadeFactory;
 use App\Helper\ExtratorDadosRequest;
 use App\Helper\ResponseFactory;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,8 +37,9 @@ abstract class BaseController extends AbstractController
     /**
      * Responsável em cadastrar novo registro
      * @param Request $req
+     * @return JsonResponse
      */
-    public function novo(Request $req) : Response
+    public function novo(Request $req): JsonResponse
     {
         $dadosRequest = $req->getContent();
         $entidade = $this->factory->criarEntidade($dadosRequest);
@@ -53,15 +54,16 @@ abstract class BaseController extends AbstractController
      * Responsável em atualizar um registro
      * @param int $id
      * @param Request $req
+     * @return JsonResponse
      */
-    public function atualizar(int $id, Request $req) : Response
+    public function atualizar(int $id, Request $req): JsonResponse
     {
         $dadosRequest = $req->getContent();
         $entidadeEnviada = $this->factory->criarEntidade($dadosRequest);
         $entidadeExistente = $this->repository->find($id);
 
         if (empty($entidadeExistente) || is_null($entidadeExistente)) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new JsonResponse('', JsonResponse::HTTP_NOT_FOUND);
         }
 
         $this->atualizarEntidadeExistente($entidadeExistente, $entidadeEnviada);
@@ -73,8 +75,9 @@ abstract class BaseController extends AbstractController
     /**
      * Responsável me buscar todos os registros
      * @param Request $request
+     * @return JsonResponse
      */
-    public function buscarTodos(Request $request) : Response
+    public function buscarTodos(Request $request): JsonResponse
     {
         $dadosOrdenacao = $this->extratorDados->buscaDadosOrdenacao($request);
         $dadosFiltro = $this->extratorDados->buscaDadosFiltro($request);
@@ -82,18 +85,19 @@ abstract class BaseController extends AbstractController
         $offset = ($paginaAtual - 1) * $itensPorPagina;
         $entityList = $this->repository->findBy($dadosFiltro, $dadosOrdenacao, $itensPorPagina, $offset);
 
-        $factoryResponse = new ResponseFactory(true, $entityList, Response::HTTP_OK, $paginaAtual, $itensPorPagina);
+        $factoryResponse = new ResponseFactory(true, $entityList, JsonResponse::HTTP_OK, $paginaAtual, $itensPorPagina);
         return $factoryResponse->getResponse();
     }
 
     /**
      * Responsável em buscar um registro especifico
      * @param int $id
+     * @return JsonResponse
      */
-    public function buscar(int $id) : Response
+    public function buscar(int $id): JsonResponse
     {
         $entidade = $this->repository->find($id);
-        $statusResponse = is_null($entidade) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
+        $statusResponse = is_null($entidade) ? JsonResponse::HTTP_NO_CONTENT : JsonResponse::HTTP_OK;
         $factoryResponse = new ResponseFactory(true, $entidade, $statusResponse);
         return $factoryResponse->getResponse();
     }
@@ -101,14 +105,15 @@ abstract class BaseController extends AbstractController
     /**
      * Responsável em excluir um registro
      * @param int $id
+     * @return JsonResponse
      */
-    public function deletar(int $id) : Response
+    public function deletar(int $id): JsonResponse
     {
         $entidade = $this->repository->find($id);
         $this->entityManager->remove($entidade);
         $this->entityManager->flush();
         
-        return new JsonResponse('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse('', JsonResponse::HTTP_NO_CONTENT);
     }
 
     abstract public function atualizarEntidadeExistente($entidadeExistente, $entidadeEnviada);

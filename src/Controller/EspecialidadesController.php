@@ -14,7 +14,7 @@ class EspecialidadesController extends BaseController
         parent::__construct($especialidadeRepository, $entityManager, $especialidadeFactory, $extratorDados);
         $this->entityManager = $entityManager;
         $this->factory = $especialidadeFactory;
-        $this->especialidadeRepository = $especialidadeRepository;
+        $this->repository = $especialidadeRepository;
     }
 
     /**
@@ -23,7 +23,7 @@ class EspecialidadesController extends BaseController
      */
     public function buscarEspecialidade(int $id)
     {
-        $especialidade = $this->especialidadeRepository->find($id);
+        $especialidade = $this->repository->find($id);
         return $especialidade;
     }
 
