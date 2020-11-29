@@ -7,7 +7,6 @@ use App\Helper\MedicoFactory;
 use App\Repository\MedicoRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MedicosController extends BaseController
